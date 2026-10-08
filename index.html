@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>OKTAV — Modular Signal Instruments</title>
+<meta name="description" content="OKTAV builds modular signal instruments. Patch the rack to hear it." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<canvas id="wires" class="wires" aria-hidden="true"></canvas>
+
+<div class="shell">
+
+  <!-- ── head strip ─────────────────────────────────────── -->
+  <header class="strip strip--head">
+    <div class="brand">
+      <span class="brand-mark">OKTAV</span>
+      <span class="brand-sub">MODULAR SIGNAL INSTRUMENTS</span>
+    </div>
+    <div class="readout" id="readout">
+      <span class="ro-cell"><i>PWR</i><b id="roPwr">+12.00 V</b></span>
+      <span class="ro-cell"><i>SIG</i><b id="roSig">—</b></span>
+      <span class="ro-cell"><i>STATE</i><b id="roState">STANDBY</b></span>
+      <span class="ro-cell"><i>CH</i><b id="roCh">0 / 4</b></span>
+    </div>
+  </header>
+
+  <!-- ── the rack ───────────────────────────────────────── -->
+  <main class="rack" id="rack">
+    <aside class="rail">
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+      <div class="rail-label">MASTER</div>
+      <div class="rail-note" id="masterNote">DRAG THE CABLE</div>
+      <div class="jack jack--master" id="masterOut" data-jack="out" data-unit="master" title="OUT"></div>
+    </aside>
+
+    <section class="unit" data-unit="vector" tabindex="0"
+             aria-label="Vector-9 quadrature oscillator">
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+      <div class="unit-head">
+        <span class="unit-no">01</span>
+        <span class="unit-kind">QUADRATURE OSC</span>
+      </div>
+      <h2 class="unit-name">VECTOR<br />9</h2>
+      <canvas class="scope" width="240" height="72"></canvas>
+      <p class="unit-line">Four phases, one core.<br />The reference source.</p>
+      <div class="led" data-led></div>
+      <div class="jacks">
+        <div class="jack jack--out" data-jack="out" data-unit="vector" title="OUT"></div>
+        <div class="jack jack--in"  data-jack="in"  data-unit="vector" title="IN"></div>
+      </div>
+    </section>
+
+    <section class="unit" data-unit="kernel" tabindex="0"
+             aria-label="Kernel system architecture">
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+      <div class="unit-head">
+        <span class="unit-no">02</span>
+        <span class="unit-kind">SYSTEM / ROUTING</span>
+      </div>
+      <h2 class="unit-name">KER<br />NEL</h2>
+      <canvas class="scope" width="240" height="72"></canvas>
+      <p class="unit-line">How the rack thinks.<br />Voltage as language.</p>
+      <div class="led" data-led></div>
+      <div class="jacks">
+        <div class="jack jack--out" data-jack="out" data-unit="kernel" title="OUT"></div>
+        <div class="jack jack--in"  data-jack="in"  data-unit="kernel" title="IN"></div>
+      </div>
+    </section>
+
+    <section class="unit" data-unit="editions" tabindex="0"
+             aria-label="Editions, past instruments">
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+      <div class="unit-head">
+        <span class="unit-no">03</span>
+        <span class="unit-kind">ARCHIVE</span>
+      </div>
+      <h2 class="unit-name">EDI<br />TIONS</h2>
+      <canvas class="scope" width="240" height="72"></canvas>
+      <p class="unit-line">Eleven instruments.<br />Four thousand units.</p>
+      <div class="led" data-led></div>
+      <div class="jacks">
+        <div class="jack jack--out" data-jack="out" data-unit="editions" title="OUT"></div>
+        <div class="jack jack--in"  data-jack="in"  data-unit="editions" title="IN"></div>
+      </div>
+    </section>
+
+    <section class="unit" data-unit="desk" tabindex="0"
+             aria-label="Desk, commissions">
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+      <div class="unit-head">
+        <span class="unit-no">04</span>
+        <span class="unit-kind">COMMISSIONS</span>
+      </div>
+      <h2 class="unit-name">THE<br />DESK</h2>
+      <canvas class="scope" width="240" height="72"></canvas>
+      <p class="unit-line">Bring us a signal<br />problem, not a spec.</p>
+      <div class="led" data-led></div>
+      <div class="jacks">
+        <div class="jack jack--out" data-jack="out" data-unit="desk" title="OUT"></div>
+        <div class="jack jack--in"  data-jack="in"  data-unit="desk" title="IN"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── detail bay ─────────────────────────────────────── -->
+  <section class="bay" id="bay" aria-live="polite">
+    <div class="bay-standby" id="bayStandby">
+      <div class="wave" aria-hidden="true"></div>
+      <p class="bay-msg">NO SIGNAL PATCHED</p>
+      <p class="bay-hint">Drag a cable from <b>MASTER&nbsp;OUT</b> into any module's <b>IN</b> jack.
+        Release it to open the unit.</p>
+    </div>
+
+    <article class="det" data-det="vector" hidden>
+      <header class="det-head">
+        <p class="det-no">UNIT 01</p>
+        <h3 class="det-title">VECTOR-9</h3>
+        <p class="det-kind">QUADRATURE OSCILLATOR · 2024</p>
+      </header>
+      <div class="det-body">
+        <p class="det-lede">A quadrature oscillator built around a single analog core that
+          refuses to be a digital imitation of one. Four phases leave the front panel at
+          once — 0°, 90°, 180°, 270° — and they stay locked to each other under load,
+          under temperature, and under the kind of patching that would make a lesser
+          core give up.</p>
+        <dl class="spec">
+          <div><dt>RANGE</dt><dd>0.001 Hz — 22 kHz</dd></div>
+          <div><dt>CORE</dt><dd>Discrete analog, no DSP</dd></div>
+          <div><dt>OUTPUTS</dt><dd>4 × quadrature, DC coupled</dd></div>
+          <div><dt>THD</dt><dd>&lt; 0.02% @ 1 kHz</dd></div>
+          <div><dt>DRIFT</dt><dd>±3 cents over 0–45 °C</dd></div>
+          <div><dt>WIDTH</dt><dd>16 HP</dd></div>
+        </dl>
+        <p class="det-copy">Most oscillators give you a waveform. This one gives you a
+          relationship — four points on a circle, moving together. Patch two of them into
+          a ring modulator and the circle turns into a surface. Patch all four into a
+          vector mixer and the surface turns into a body you can steer with one hand.</p>
+      </div>
+    </article>
+
+    <article class="det" data-det="kernel" hidden>
+      <header class="det-head">
+        <p class="det-no">UNIT 02</p>
+        <h3 class="det-title">KERNEL</h3>
+        <p class="det-kind">SYSTEM ARCHITECTURE</p>
+      </header>
+      <div class="det-body">
+        <p class="det-lede">The rack is not a collection of modules. It is one argument,
+          made in voltage, and the patch cable is the sentence structure.</p>
+        <ol class="laws">
+          <li>
+            <span class="law-no">I</span>
+            <h4>VOLTAGE IS MEANING</h4>
+            <p>Every jack states its own units on the panel. Nothing is hidden behind a
+              menu, a firmware mode, or a colour you have to memorise. If it carries
+              current, it carries a name.</p>
+          </li>
+          <li>
+            <span class="law-no">II</span>
+            <h4>PATCHING IS AUTHORSHIP</h4>
+            <p>The instrument does not have presets. It has a history of cables. When you
+              unplug, the state is gone — which is the point. You keep the diagram, not
+              the file.</p>
+          </li>
+          <li>
+            <span class="law-no">III</span>
+            <h4>RETURN IS PART OF THE SOUND</h4>
+            <p>What a signal does on its way back to zero is as composed as what it does
+              on the way out. We tune the discharge, not just the attack.</p>
+          </li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="det" data-det="editions" hidden>
+      <header class="det-head">
+        <p class="det-no">UNIT 03</p>
+        <h3 class="det-title">EDITIONS</h3>
+        <p class="det-kind">ELEVEN INSTRUMENTS · 2019 — 2026</p>
+      </header>
+      <div class="det-body">
+        <p class="det-lede">Each run is finite. When a panel is done it is done — the
+          aluminium is cut, the silkscreen is burnt in, and we move to the next argument.</p>
+        <table class="editions">
+          <thead>
+            <tr><th>NO.</th><th>INSTRUMENT</th><th>CLASS</th><th>YEAR</th><th>RUN</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>11</td><td>VECTOR-9</td><td>OSCILLATOR</td><td>2024</td><td>400</td></tr>
+            <tr><td>10</td><td>HALFLIGHT</td><td>ENVELOPE</td><td>2024</td><td>250</td></tr>
+            <tr><td>09</td><td>DRY DOCK</td><td>RESONATOR</td><td>2023</td><td>600</td></tr>
+            <tr><td>08</td><td>PAPERWEIGHT</td><td>ATTENUATOR</td><td>2023</td><td>1200</td></tr>
+            <tr><td>07</td><td>NULL SET</td><td>LOGIC</td><td>2022</td><td>300</td></tr>
+            <tr><td>06</td><td>BITTERN</td><td>FILTER</td><td>2021</td><td>350</td></tr>
+            <tr><td>05</td><td>SLOW WATER</td><td>DELAY</td><td>2021</td><td>200</td></tr>
+            <tr><td>04</td><td>EMBER</td><td>OSCILLATOR</td><td>2020</td><td>180</td></tr>
+            <tr><td>03</td><td>GRIST</td><td>NOISE</td><td>2020</td><td>150</td></tr>
+            <tr><td>02</td><td>LONG COUNT</td><td>CLOCK</td><td>2019</td><td>120</td></tr>
+            <tr><td>01</td><td>OKTAV ONE</td><td>SYSTEM</td><td>2019</td><td>80</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="det" data-det="desk" hidden>
+      <header class="det-head">
+        <p class="det-no">UNIT 04</p>
+        <h3 class="det-title">THE DESK</h3>
+        <p class="det-kind">COMMISSIONS &amp; REPAIR</p>
+      </header>
+      <div class="det-body">
+        <p class="det-lede">We take on six commissions a year. Most of them start as a
+          problem someone could not solve with the instruments already on the market.</p>
+        <a class="cta" href="mailto:desk@oktav.audio?subject=Commission"><span>PATCH US</span></a>
+        <dl class="spec">
+          <div><dt>DESK</dt><dd><a href="mailto:desk@oktav.audio">desk@oktav.audio</a></dd></div>
+          <div><dt>WORKSHOP</dt><dd>Köpenicker Str. 154, Berlin</dd></div>
+          <div><dt>REPAIR</dt><dd>Any OKTAV panel, forever, at cost</dd></div>
+          <div><dt>ANSWER</dt><dd>Within two working days</dd></div>
+        </dl>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── foot strip ─────────────────────────────────────── -->
+  <footer class="strip strip--foot">
+    <div class="foot-left">
+      <span class="foot-meta">BERLIN · EST. 2019 · SERIAL 0007</span>
+      <span class="foot-meta foot-meta--hi" id="footState">RACK READY</span>
+    </div>
+    <div class="foot-right">
+      <button class="btn" id="unplugBtn" type="button">UNPLUG ALL</button>
+    </div>
+  </footer>
+
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
